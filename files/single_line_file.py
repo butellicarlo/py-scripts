@@ -1,9 +1,10 @@
 import sys
+from io import StringIO
 
 
-def rows(f, chunksize=1024, sep='|'):
+def gen_rows_by_chunk(f: StringIO, chunksize: int = 1024, sep: str = '|'):
     """
-    Read a file where the row separator is '|' lazily.
+    Generate rows from file where the row separator is '|' lazily.
     """
     incomplete_row = None
     while True:
@@ -33,16 +34,12 @@ def rows(f, chunksize=1024, sep='|'):
             incomplete_row = chunk
 
 
-def main(file):
-    with open(file) as f:
-        for row in rows(f):
-            print(row)
-
-
 if __name__ == "__main__":
     try:
         file = sys.argv[1]
     except IndexError as e:
         print(f"Error: {e}\n ==> Please provide a path to a file as argument.")
         sys.exit(1)
-    main(file)
+    with open(file) as f:
+        for row in gen_rows_by_chunk(f):
+            print(row)
